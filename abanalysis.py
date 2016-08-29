@@ -13,12 +13,6 @@ from zhangyan_tools import *
 #from mytools import *
 #from common_info.py import *
 
-#def myigblast(infiles,num,prj_folder):
-#	#cmd = '%s <  %s'%('bsub', IgBLAST_job)
-#	#prj_folder = os.getcwd()
-#	thisfname = os.path.splitext(os.path.split(infiles[int(num)])[1])[0]
-#	IgBLAST_run = subprocess.call("igblastn -num_threads 4 -germline_db_V /zzh_gpfs02/zhangyan/20160314-Donor45-zhangyan/IgBLAST_database/20150429-human-gl-v -germline_db_J /zzh_gpfs02/zhangyan/20160314-Donor45-zhangyan/IgBLAST_database/20150429-human-gl-j -germline_db_D /zzh_gpfs02/zhangyan/20160314-Donor45-zhangyan/IgBLAST_database/20150429-human-gl-d -organism human -domain_system imgt -query %s -auxiliary_data /zzh_gpfs02/zhangyan/20150429-IgBLAST_optional_files/human_gl.aux -outfmt '7 qseqid sseqid pident length mismatch gapopen gaps qstart qend sstart send evalue bitscore qlen slen qseq sseq score frames qframe sframe positive ppos btop staxids stitle sstrand qcovs qcovhsp' -num_alignments_V 10 -num_alignments_D 10 -num_alignments_J 10 -out %s/1.6-IgBLAST_result/IgBLAST_result_%s &"%(infiles[int(num)],prj_folder,thisfname,),shell=True)
-
 
 def main():
 	prj_folder = os.getcwd()
@@ -152,15 +146,9 @@ def main():
 
     ###-- BEGIN -- Igblast
 	print "Igblast-ing"
-	#infiles = glob.glob("%s/1.4-split/*.fa"%prj_folder)
-	#igblasts = "igblastn -germline_db_V /zzh_gpfs02/zhangyan/20160314-Donor45-zhangyan/IgBLAST_database/20150429-human-gl-v -germline_db_J /zzh_gpfs02/zhangyan/20160314-Donor45-zhangyan/IgBLAST_database/20150429-human-gl-j -germline_db_D /zzh_gpfs02/zhangyan/20160314-Donor45-zhangyan/IgBLAST_database/20150429-human-gl-d -organism human -domain_system imgt -query $i -auxiliary_data /zzh_gpfs02/zhangyan/20150429-IgBLAST_optional_files/human_gl.aux -outfmt '7 qseqid sseqid pident length mismatch gapopen gaps qstart qend sstart send evalue bitscore qlen slen qseq sseq score frames qframe sframe positive ppos btop staxids stitle sstrand qcovs qcovhsp' -num_alignments_V 10 -num_alignments_D 10 -num_alignments_J 10 -out ../1.7-IgBLAST_result/IgBLAST_result_$i"
-	#cmds = "for i in `ls *.fa`;do bsub -n 1 -q cpu -e errput_$i -o output_$i %s;done"%igblasts
 	cd_cmd = "sh igblast.sh"
-	#pre_IgBLAST = subprocess.call(cd_cmd, shell=True)
 	run_IgBLAST = subprocess.call(cd_cmd, shell=True)
-	#file_numbers =len(infiles)
-	#for num in range(0,file_numbers):
-	#	myigblast(infiles,num,prj_folder)
+
 			
 
 if __name__ == '__main__':
