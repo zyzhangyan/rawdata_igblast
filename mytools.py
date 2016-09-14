@@ -3,8 +3,8 @@
 """
 mytools.py
 
-Created by Zhenhai Zhang on 2011-04-05.
-Copyright (c) 2011 Columbia University and Vaccine Research Center, National Institutes of Health, USA. All rights reserved.
+Created by Mingchen Yan on 2011-04-05.
+Copyright (c) 2016 SMU. All rights reserved.
 """
 import sys, os, csv, re
 from common_info import *
@@ -28,11 +28,107 @@ from numpy import mean, array, zeros, ones, nan, std, isnan
 #else:
 #	from numpy_related import *
 
-
-
 #
 # -- BEGIN -- class defination
 #
+class ProjectFolders:
+	"""folder structure of a project """
+	
+	def __init__(self, proj_home):
+		
+		# 1st level subfolders
+		self.home		= proj_home
+		self.origin 	= "%s/%s" 			%(proj_home, ORG_FOLDER)
+		self.filtered 	= "%s/%s"			%(proj_home, FILTERED_FOLDER)
+		self.mapping 	= "%s/%s"			%(proj_home, MAPPING_FOLDER)
+		self.analysis	= "%s/%s"			%(proj_home, ANALYSIS_FOLDER)
+		self.logs		= "%s/%s"			%(proj_home, LOG_FOLDER)
+		self.clustal	= "%s/%s"			%(proj_home, CLUSTAL_FOLDER)
+		self.phylo		= "%s/%s"			%(proj_home, PHYLO_FOLDER)
+		self.docs		= "%s/%s"			%(proj_home, DOC_FOLDER)
+		self.tmp		= "%s/%s"			%(proj_home, TMP_FOLDER)
+		
+		# 2nd level subfolders -- mapping
+		self.split 		= "%s/%s"			%(proj_home, SPLIT_FOLDER)
+		self.germ		= "%s/%s"			%(proj_home, GERM_FOLDER)
+		self.native		= "%s/%s"			%(proj_home, NAT_FOLDER)
+		self.reads		= "%s/%s"			%(proj_home, SELF_FOLDER)
+		self.pbs		= "%s/%s"			%(proj_home, PBS_FOLDER)
+		self.jobs		= "%s/%s"			%(proj_home, JOB_FOLDER)
+		
+		# 2nd level subfolders -- analysis
+		self.data		= "%s/%s"			%(proj_home, ANALYSIS_DATA_FOLDER)
+		self.figure		= "%s/%s"			%(proj_home	, ANALYSIS_FIGURE_FOLDER)
+		
+		# 2nd level clustal folders
+		self.clustal_fasta		= "%s/%s" %(proj_home, CLUSTAL_FASTA_FOLDER)
+		self.clustal_pbs		= "%s/%s" %(proj_home, CLUSTAL_PBS_FOLDER)
+		self.clustal_job		= "%s/%s" %(proj_home, CLUSTAL_JOB_FOLDER)
+		self.clustal_data		= "%s/%s" %(proj_home, CLUSTAL_DATA_FOLDER)
+		
+		self.igblast_data       = "%s/%s" %(proj_home, IGBLAST_DATA_FOLDER)
+		self.igblast_database   = "%s/%s" %(proj_home, IGBLAST_DATABASE_FOLDER)
+		self.igblast_tmp        = "%s/%s" %(proj_home, IGBLAST_TMP_FOLDER)
+
+def create_folders(folder):
+	"""create subfolders """
+	if not check_folder(folder, ORG_FOLDER):
+		
+		try:
+			create_subfolder(folder, ORG_FOLDER)
+			create_subfolder(folder, IGBLAST_DATABASE_FOLDER)
+			print "**** Please put original fasta/qual files in folder %s!! ****" %ORG_FOLDER
+			print "**** Please put IGBLAST Database files in folder %s!! ****" %IGBLAST_DATABASE_FOLDER
+		except:
+			print "ERROR: CANNOT CREATE SUBFOLDER: %s" %ORG_FOLDER
+		
+		
+		sys.exit(0)
+	# Create 1st level subfolders IGBLAST_DATABASE_FOLDER
+	FIRST_LEVEL_SUBFOLDERS = [FILTERED_FOLDER, MAPPING_FOLDER, ANALYSIS_FOLDER, 
+	CLUSTAL_FOLDER, PHYLO_FOLDER, DOC_FOLDER, TMP_FOLDER, IGBLAST_TMP_FOLDER, JOB_FOLDER, LOG_FOLDER, 
+	SELF_FOLDER, PBS_FOLDER, IGBLAST_DATA_FOLDER, ANALYSIS_DATA_FOLDER,
+	ANALYSIS_FIGURE_FOLDER, CLUSTAL_FASTA_FOLDER, 
+	CLUSTAL_PBS_FOLDER, CLUSTAL_JOB_FOLDER, CLUSTAL_DATA_FOLDER]
+	
+	for subfolder in FIRST_LEVEL_SUBFOLDERS:
+		try:
+			#shutil.rmtree("%s/%s/" %(folder, subfolder))
+			os.system("rm -rf %s/%s/" %(folder, subfolder))
+		except:
+			print "Can't delete existed subfolder: %s"%subfolder
+			pass
+			
+		try:
+			create_subfolder(folder, subfolder)
+			
+		except:		# may need to delete old folders
+			print "FOLDER EXISTS: subfolder"
+			
+	SECOND_LEVEL_SUBFOLDERS = [SPLIT_FOLDER, GERM_FOLDER, NAT_FOLDER]
+	
+	# Create 2nd level subfolders
+	for subfolder in SECOND_LEVEL_SUBFOLDERS:
+		try:
+			#shutil.rmtree("%s/%s/" %(folder, subfolder))
+			os.system("rm -rf %s/%s/" %(folder, subfolder))
+			create_subfolder(folder, subfolder)
+			
+		except:		# may need to delete old folders
+			print "FOLDER EXISTS: subfolder"
+	
+	
+	return ProjectFolders(folder)
+
+def check_folder(folder, sub_folder):
+	"""return False if sub_folder does not exist; otherwise return full path of subfolder"""
+
+	full_path = "%s/%s/" %(folder, sub_folder)
+	
+	if os.path.exists(full_path):
+		return full_path
+
+return False
 
 class MyNode:
 	def __init__(self, parent):
