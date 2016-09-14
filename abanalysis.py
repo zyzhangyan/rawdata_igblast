@@ -5,7 +5,7 @@ Usage:1 for cut the low quality bases(<=20) in both ends and make sure the final
 	  
 parameter: counts, basecount, finalcount, ncontent.
 Created by Zhang Yan on 2016-06-06
-
+modified 2016-09-14
 """
 import sys, os, glob, subprocess
 from Bio import SeqIO
@@ -21,7 +21,7 @@ def main():
 	#print fname
 	
 	'''
-	### -- BEGIN -- combine fna file and qual file 
+	### -- BEGIN -- combine fna file and qual file for 454 sequencing
 	print "Combining fna file and qual file"
 	fna = glob.glob("%s/rawdata/*.fna"%(prj_folder))
 	qual = glob.glob("%s/rawdata/*.qual"%(prj_folder))
